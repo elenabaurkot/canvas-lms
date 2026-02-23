@@ -136,6 +136,12 @@ assignment in the destination course.
   use the integration copy API parameters directly? The system should
   reject the request as part of existing course copy authorization.
 
+## Clarifications
+
+### Session 2026-02-22
+
+- Q: Should the integration copy options apply only to the direct course copy flow, or also to other content migration types? → A: Course copy only for the initial PR. Blueprint sync and course templates are planned follow-ups to keep the first contribution focused and reviewable.
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
@@ -161,6 +167,10 @@ assignment in the destination course.
 - **FR-008**: The options MUST be visible to any user who has permission
   to initiate a course copy. No additional permission check is required
   beyond the existing course copy authorization.
+- **FR-009**: The feature scope is limited to the direct course copy
+  flow. Blueprint sync, course templates, Canvas cartridge
+  export/import, and Common Cartridge import are excluded from this
+  initial contribution.
 
 ### Key Entities
 
@@ -204,3 +214,12 @@ assignment in the destination course.
   for handling any collisions.
 - The feature works for both "Copy all content" and "Select specific
   content" modes of course copy.
+
+## Future Work
+
+- **Blueprint sync**: Carry over integration fields when a Blueprint
+  course syncs to associated courses.
+- **Course templates**: Carry over integration fields when a course is
+  created from a template.
+- **Other content types**: Extend to quizzes, discussion topics, or
+  other entities that have integration fields.
