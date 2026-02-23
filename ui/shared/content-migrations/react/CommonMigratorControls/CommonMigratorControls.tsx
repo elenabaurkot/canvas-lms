@@ -40,6 +40,8 @@ type CommonMigratorControlsProps = {
   canOverwriteAssessmentContent?: boolean
   canAdjustDates?: boolean
   canImportBPSettings?: boolean
+  canCopyIntegrationIds?: boolean
+  canCopyIntegrationData?: boolean
   onSubmit: onSubmitMigrationFormCallback
   onCancel: () => void
   fileUploadProgress: number | null
@@ -129,6 +131,8 @@ export const CommonMigratorControls = ({
   canOverwriteAssessmentContent = false,
   canAdjustDates = false,
   canImportBPSettings = false,
+  canCopyIntegrationIds = false,
+  canCopyIntegrationData = false,
   onSubmit,
   onCancel,
   isSubmitting,
@@ -149,6 +153,8 @@ export const CommonMigratorControls = ({
     !!ENV.NEW_QUIZZES_MIGRATION_DEFAULT,
   )
   const [overwriteAssessmentContent, setOverwriteAssessmentContent] = useState<boolean>(false)
+  const [copyIntegrationIds, setCopyIntegrationIds] = useState<boolean>(false)
+  const [copyIntegrationData, setCopyIntegrationData] = useState<boolean>(false)
   const [showAdjustDates, setShowAdjustDates] = useState<boolean>(false)
   const [dateAdjustmentConfig, setDateAdjustmentConfig] = useState<DateAdjustmentConfig>({
     adjust_dates: {
@@ -199,6 +205,8 @@ export const CommonMigratorControls = ({
     }
     canImportAsNewQuizzes && (data.settings.import_quizzes_next = importAsNewQuizzes)
     canOverwriteAssessmentContent && (data.settings.overwrite_quizzes = overwriteAssessmentContent)
+    canCopyIntegrationIds && (data.settings.copy_integration_ids = copyIntegrationIds)
+    canCopyIntegrationData && (data.settings.copy_integration_data = copyIntegrationData)
     onSubmit(data)
   }, [
     selectiveImport,
@@ -211,6 +219,10 @@ export const CommonMigratorControls = ({
     importAsNewQuizzes,
     canOverwriteAssessmentContent,
     overwriteAssessmentContent,
+    canCopyIntegrationIds,
+    copyIntegrationIds,
+    canCopyIntegrationData,
+    copyIntegrationData,
     onSubmit,
   ])
 
@@ -262,6 +274,34 @@ export const CommonMigratorControls = ({
               tmp.adjust_dates.enabled = target.checked ? 1 : 0
               setDateAdjustmentConfig(tmp)
             }}
+          />,
+        ]
+      : []),
+    ...(canCopyIntegrationIds
+      ? [
+          <Checkbox
+            key="copy_integration_ids"
+            name="copy_integration_ids"
+            value="copy_integration_ids"
+            disabled={isSubmitting}
+            label={I18n.t('Copy assignment integration IDs')}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setCopyIntegrationIds(e.target.checked)
+            }
+          />,
+        ]
+      : []),
+    ...(canCopyIntegrationData
+      ? [
+          <Checkbox
+            key="copy_integration_data"
+            name="copy_integration_data"
+            value="copy_integration_data"
+            disabled={isSubmitting}
+            label={I18n.t('Copy assignment integration data')}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setCopyIntegrationData(e.target.checked)
+            }
           />,
         ]
       : []),

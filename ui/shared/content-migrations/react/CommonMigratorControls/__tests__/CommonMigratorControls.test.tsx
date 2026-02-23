@@ -131,6 +131,30 @@ describe('CommonMigratorControls', () => {
     )
   })
 
+  it('calls onSubmit with copy_integration_ids', async () => {
+    renderComponent({canCopyIntegrationIds: true})
+    await userEvent.click(screen.getByRole('checkbox', {name: 'Copy assignment integration IDs'}))
+    await userEvent.click(screen.getByRole('button', {name: 'Add to Import Queue'}))
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        settings: expect.objectContaining({copy_integration_ids: true}),
+      }),
+    )
+  })
+
+  it('calls onSubmit with copy_integration_data', async () => {
+    renderComponent({canCopyIntegrationData: true})
+    await userEvent.click(screen.getByRole('checkbox', {name: 'Copy assignment integration data'}))
+    await userEvent.click(screen.getByRole('button', {name: 'Add to Import Queue'}))
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        settings: expect.objectContaining({copy_integration_data: true}),
+      }),
+    )
+  })
+
   it('calls onSubmit with all data', async () => {
     renderComponent({
       canSelectContent: true,

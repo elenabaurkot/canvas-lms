@@ -335,6 +335,14 @@ class ContentMigrationsController < ApplicationController
   #   from the source course or package. The destination course must not be associated
   #   with an existing blueprint course and cannot have any student or observer enrollments.
   #
+  # @argument settings[copy_integration_ids] [Boolean]
+  #   Whether to copy integration_id values from source assignments
+  #   to destination assignments during a course copy.
+  #
+  # @argument settings[copy_integration_data] [Boolean]
+  #   Whether to copy integration_data values from source assignments
+  #   to destination assignments during a course copy.
+  #
   # @argument date_shift_options[shift_dates] [Boolean]
   #   Whether to shift dates in the copied course
   #
