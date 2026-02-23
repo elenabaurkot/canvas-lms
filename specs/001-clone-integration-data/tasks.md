@@ -37,6 +37,8 @@
 
 ### Implementation for User Story 1
 
+- [x] T004a [US1] Add `integration_id` to the exported attributes in `lib/cc/assignment_resources.rb` and add JSON-serialized `integration_data` export (same pattern as `turnitin_settings`)
+- [x] T004b [US1] Add `integration_id` to the string-type import list in `lib/cc/importer/standard/assignment_converter.rb` and add JSON parsing for `integration_data`
 - [x] T004 [US1] Add conditional `integration_id` copy in `app/models/importers/assignment_importer.rb` inside `import_from_migration`: set `item.integration_id = hash[:integration_id] if migration.copy_integration_ids?` (after existing field assignments, near ~line 359)
 - [x] T005 [P] [US1] Add `canCopyIntegrationIds` prop (boolean, optional) to `CommonMigratorControlsProps` in `ui/shared/content-migrations/react/CommonMigratorControls/CommonMigratorControls.tsx`: add state `copyIntegrationIds` (default false), add Checkbox to the `options` array with `I18n.t('Copy assignment integration IDs')` label, add `data.settings.copy_integration_ids = copyIntegrationIds` to `handleSubmit`
 - [x] T006 [P] [US1] Pass `canCopyIntegrationIds={true}` to `CommonMigratorControls` in `ui/features/content_migrations/react/components/migrator_forms/course_copy.tsx`

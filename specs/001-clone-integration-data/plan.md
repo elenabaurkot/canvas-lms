@@ -149,6 +149,28 @@ item.integration_id = hash[:integration_id] if migration.copy_integration_ids?
 item.integration_data = hash[:integration_data] if migration.copy_integration_data?
 ```
 
+#### 5. `lib/cc/assignment_resources.rb` — Export fields
+
+Add `integration_id` to the `atts` array so it is included in the
+course export XML. `integration_data` is a hash and needs JSON
+serialization (same pattern as `turnitin_settings`):
+
+```ruby
+node.tag!(:integration_data, assignment.integration_data.to_json) if assignment.integration_data.present?
+```
+
+#### 6. `lib/cc/importer/standard/assignment_converter.rb` — Parse exported fields
+
+Add `integration_id` to the string-type attribute list so it is read
+back from the XML. Parse `integration_data` from JSON:
+
+```ruby
+integration_data_val = get_node_val(meta_doc, "integration_data")
+if integration_data_val.present?
+  assignment["integration_data"] = JSON.parse(integration_data_val)
+end
+```
+
 ### Frontend Changes
 
 #### 5. `CommonMigratorControls.tsx` — Checkboxes
