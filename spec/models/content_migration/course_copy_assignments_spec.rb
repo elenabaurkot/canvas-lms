@@ -1199,5 +1199,91 @@ describe ContentMigration do
         expect(a_to).to be_valid
       end
     end
+
+    context "integration_id copying" do
+      it "copies integration_id when copy_integration_ids is enabled" do
+        assignment_model(course: @copy_from, points_possible: 10, submission_types: "online_text_entry")
+        @assignment.update!(integration_id: "ext-system-42")
+
+        @cm.migration_settings[:copy_integration_ids] = true
+        @cm.save!
+
+        run_course_copy
+
+        a_to = @copy_to.assignments.find_by(migration_id: mig_id(@assignment))
+        expect(a_to.integration_id).to eq "ext-system-42"
+      end
+
+      it "does not copy integration_id when copy_integration_ids is not enabled" do
+        assignment_model(course: @copy_from, points_possible: 10, submission_types: "online_text_entry")
+        @assignment.update!(integration_id: "ext-system-42")
+
+        run_course_copy
+
+        a_to = @copy_to.assignments.find_by(migration_id: mig_id(@assignment))
+        expect(a_to.integration_id).to be_nil
+      end
+    end
+
+    context "integration_data copying" do
+      it "copies integration_data when copy_integration_data is enabled" do
+        assignment_model(course: @copy_from, points_possible: 10, submission_types: "online_text_entry")
+        @assignment.update!(integration_data: { "sis_source" => "ABC", "vendor_id" => 99 })
+
+        @cm.migration_settings[:copy_integration_data] = true
+        @cm.save!
+
+        run_course_copy
+
+        a_to = @copy_to.assignments.find_by(migration_id: mig_id(@assignment))
+        expect(a_to.integration_data).to eq({ "sis_source" => "ABC", "vendor_id" => 99 })
+      end
+
+      it "does not copy integration_data when copy_integration_data is not enabled" do
+        assignment_model(course: @copy_from, points_possible: 10, submission_types: "online_text_entry")
+        @assignment.update!(integration_data: { "sis_source" => "ABC", "vendor_id" => 99 })
+
+        run_course_copy
+
+        a_to = @copy_to.assignments.find_by(migration_id: mig_id(@assignment))
+        expect(a_to.integration_data).to be_nil
+      end
+    end
+
+    context "both integration_id and integration_data copying" do
+      it "copies both fields when both settings are enabled" do
+        assignment_model(course: @copy_from, points_possible: 10, submission_types: "online_text_entry")
+        @assignment.update!(integration_id: "vendor-101", integration_data: { "key" => "value", "num" => 7 })
+
+        @cm.migration_settings[:copy_integration_ids] = true
+        @cm.migration_settings[:copy_integration_data] = true
+        @cm.save!
+
+        run_course_copy
+
+        a_to = @copy_to.assignments.find_by(migration_id: mig_id(@assignment))
+        expect(a_to.integration_id).to eq "vendor-101"
+        expect(a_to.integration_data).to eq({ "key" => "value", "num" => 7 })
+      end
+
+      it "copies only populated fields when both settings are enabled" do
+        a1 = @copy_from.assignments.create!(title: "Only ID", submission_types: "online_text_entry", integration_id: "id-only")
+        a2 = @copy_from.assignments.create!(title: "Only Data", submission_types: "online_text_entry", integration_data: { "data" => "only" })
+
+        @cm.migration_settings[:copy_integration_ids] = true
+        @cm.migration_settings[:copy_integration_data] = true
+        @cm.save!
+
+        run_course_copy
+
+        a1_to = @copy_to.assignments.find_by(migration_id: mig_id(a1))
+        expect(a1_to.integration_id).to eq "id-only"
+        expect(a1_to.integration_data).to be_nil
+
+        a2_to = @copy_to.assignments.find_by(migration_id: mig_id(a2))
+        expect(a2_to.integration_id).to be_nil
+        expect(a2_to.integration_data).to eq({ "data" => "only" })
+      end
+    end
   end
 end

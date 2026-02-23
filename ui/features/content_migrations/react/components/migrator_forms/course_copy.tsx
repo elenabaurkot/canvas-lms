@@ -291,6 +291,8 @@ export const CourseCopyImporter = ({onSubmit, onCancel, isSubmitting}: CourseCop
         canImportBPSettings={
           selectedCourse && showBpSettingImport ? selectedCourse.blueprint : false
         }
+        canCopyIntegrationIds={true}
+        canCopyIntegrationData={true}
         oldStartDate={parseDateToISOString(oldStartDate)}
         oldEndDate={parseDateToISOString(oldEndDate)}
         newStartDate={parseDateToISOString(newStartDate)}

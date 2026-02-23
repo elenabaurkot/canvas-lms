@@ -371,6 +371,9 @@ module Importers
         end
       end
 
+      item.integration_id = hash[:integration_id] if migration.copy_integration_ids?
+      item.integration_data = hash[:integration_data] if migration.copy_integration_data?
+
       [:turnitin_enabled, :vericite_enabled].each do |prop|
         if !hash[prop].nil? && context.send(:"#{prop}?")
           item.send(:"#{prop}=", hash[prop])

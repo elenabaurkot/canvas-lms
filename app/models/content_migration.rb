@@ -713,6 +713,14 @@ class ContentMigration < ActiveRecord::Base
     Canvas::Plugin.value_to_boolean(migration_settings[:import_quizzes_next])
   end
 
+  def copy_integration_ids?
+    Canvas::Plugin.value_to_boolean(migration_settings[:copy_integration_ids])
+  end
+
+  def copy_integration_data?
+    Canvas::Plugin.value_to_boolean(migration_settings[:copy_integration_data])
+  end
+
   def quizzes_next_migration?
     context.instance_of?(Course) &&
       context.feature_enabled?(:quizzes_next) &&
